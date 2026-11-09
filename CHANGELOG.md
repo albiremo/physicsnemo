@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- GP training recipe in `experimental.uq.gp`:
+  `FieldVariationalGPHead.seed_inducing_points` places inducing points on
+  k-means++ medoids of candidate features (or a uniform draw), after
+  re-estimating the radial BatchNorm; `set_num_data` on both GP heads updates
+  the ELBO's dataset size, e.g. as an active-learning pool grows;
+  `FieldVariationalGPHead.param_groups` returns the reference recipe's GP /
+  network optimizer groups. New helpers `linear_warmup`, `subsample_points`,
+  `latent_distance_penalty` and `kmeans_medoids`; the field-GP example now uses
+  them instead of its private copies.
 - `physicsnemo.mesh.sampling.sample_cells_systematic` draws a fixed number of
   a mesh's cells with probability proportional to their measure, with
   Horvitz-Thompson weights for unbiased sums. The sample is spread over the
@@ -429,6 +438,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     file; PyVista reads and writes OBJ, VTP, and STL.
 
 ### Fixed
+
+- `VariationalGPHead` and `FieldVariationalGPHead` keep their GP internals in
+  float64 when a parent module is cast with `.to(dtype)` / `.float()` (as the
+  active-learning `Driver` does), instead of failing in gpytorch on mixed
+  float32 / float64 operands.
 
 - `initialize_mlflow` offline mode logs to SQLite (`./mlruns/mlflow.db`)
   instead of the file store that current MLflow rejects.
