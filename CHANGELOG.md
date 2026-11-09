@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `active_learning.OptimizerConfig.rebuild_scheduler_per_phase`: the `Driver`
+  builds a fresh LR scheduler for every training phase, sizing `total_steps`
+  (e.g. `OneCycleLR`) to that phase's epochs x batches as the pool grows, and
+  using `fine_tuning_lr` as the first group's `max_lr` after the first step.
 - GP training recipe in `experimental.uq.gp`:
   `FieldVariationalGPHead.seed_inducing_points` places inducing points on
   k-means++ medoids of candidate features (or a uniform draw), after
